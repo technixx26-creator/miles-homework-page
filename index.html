@@ -1,34 +1,27 @@
 <script>
-document.getElementById("generateBtn").addEventListener("click", async () => {
-  const instructions = document.getElementById("instructions").value.trim();
-  const text = document.getElementById("text").value.trim();
-  const output = document.getElementById("output");
+  document.getElementById("generateBtn").addEventListener("click", async () => {
+    const instructions = document.getElementById("instructions").value.trim();
+    const text = document.getElementById("text").value.trim();
+    const output = document.getElementById("output");
 
-  output.textContent = "Processing...";
+    output.innerText = "⏳ Generating...";
 
-  try {
-    const res = await fetch("/api/generate", {   // ✅ FIXED ENDPOINT
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        instructions,
-        text,
-      }),
-    });
+    try {
+      const response = await fetch('/api/generate', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ instructions, text })
+      });
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      output.textContent = "Error: " + (err.error || res.statusText);
-      return;
+      if (!response.ok) {
+        output.innerText = "❌ Server error";
+        return;
+      }
+
+      const data = await response.json();
+      output.innerText = data.result || "❌ No result returned.";
+    } catch (error) {
+      output.innerText = "❌ Error: " + error.message;
     }
-
-    const data = await res.json();
-    output.textContent = data.result || "No response received.";
-  } catch (error) {
-    output.textContent = "Error: " + error.message;
-  }
-});
+  });
 </script>
-
