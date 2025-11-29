@@ -1,27 +1,27 @@
 <script>
 document.getElementById("generateBtn").addEventListener("click", async () => {
-  const instructions = document.getElementById("instructions").value;
-  const text = document.getElementById("text").value;
+    const instructions = document.getElementById("instructions").value;
+    const text = document.getElementById("text").value;
 
-  const output = document.getElementById("output");
-  output.textContent = "⏳ Generating...";
+    const output = document.getElementById("output");
+    output.textContent = "⏳ Generating...";
 
-  try {
-    const response = await fetch("https://technixx26.app.n8n.cloud/webhook/teacher-reference", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        instructions: instructions,
-        text: text
-      })
-    });
+    try {
+        const response = await fetch("https://technixx26.app.n8n.cloud/webhook/teacher-reference", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                text: text,
+                instructions: "Rewrite it in Miles Keating style: casual, direct, slightly humorous, no cringe, no fluff."
+            }),
+        });
 
-    const data = await response.json();
-    output.textContent = data.result || "❌ No result returned.";
-  } catch (err) {
-    output.textContent = "❌ Error: " + err.message;
-  }
+        const data = await response.json();
+        output.textContent = data.result || "❌ No result returned.";
+    } catch (err) {
+        output.textContent = "❌ Error: " + err.message;
+    }
 });
 </script>
