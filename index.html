@@ -1,27 +1,76 @@
-<script>
-  document.getElementById("generateBtn").addEventListener("click", async () => {
-    const instructions = document.getElementById("instructions").value.trim();
-    const text = document.getElementById("text").value.trim();
-    const output = document.getElementById("output");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MilesAI — Teacher Reference Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-top: 5px;
+      margin-bottom: 20px;
+      padding: 10px;
+    }
+    #output {
+      width: 100%;
+      min-height: 100px;
+      background: #f7f7f7;
+      padding: 15px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
 
-    output.innerText = "⏳ Generating...";
+<body>
+  <h1>MilesAI — Teacher Reference Generator</h1>
+  <p>Paste the assignment instructions and homework text below, then click Generate.</p>
 
-    try {
-      const response = await fetch('/api/generate', {
+  <h3>Assignment Instructions:</h3>
+  <textarea id="instructions"></textarea>
+
+  <h3>Homework Text:</h3>
+  <textarea id="text"></textarea>
+
+  <button onclick="generate()">Generate Reference</button>
+
+  <h3>Output:</h3>
+  <div id="output">Waiting for input...</div>
+
+  <script>
+    async function generate() {
+      const instructions = document.getElementById("instructions").value;
+      const text = document.getElementById("text").value;
+
+      document.getElementById("output").innerText = "Generating...";
+
+      const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ instructions, text })
+        body: JSON.stringify({ instructions, text }),
       });
 
-      if (!response.ok) {
-        output.innerText = "❌ Server error";
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        document.getElementById("output").innerText = "Error: Failed to parse server response.";
         return;
       }
 
-      const data = await response.json();
-      output.innerText = data.result || "❌ No result returned.";
-    } catch (error) {
-      output.innerText = "❌ Error: " + error.message;
+      if (data.error) {
+        document.getElementById("output").innerText = "Error: " + data.error;
+      } else {
+        document.getElementById("output").innerText = data.result;
+      }
     }
-  });
-</script>
+  </script>
+</body>
+</html>
