@@ -34,41 +34,15 @@
 <textarea id="instructions"></textarea>
 
 <h2>Homework Text:</h2>
-<textarea id="text"></textarea>
+<textarea id="homework"></textarea>
 
-<button id="generateBtn">Generate Reference</button>
+<button onclick="generateReference()">Generate Reference</button>
 
 <h2>Output:</h2>
-<div id="output"></div>
+<div id="output">Waiting...</div>
 
 
-<!--  🔥 SCRIPT MUST BE AT THE VERY BOTTOM OR PAGE GOES BLANK -->
-<script>
-document.getElementById("generateBtn").addEventListener("click", async () => {
-    const instructions = document.getElementById("instructions").value;
-    const text = document.getElementById("text").value;
-
-    const output = document.getElementById("output");
-    output.textContent = "⏳ Generating...";
-
-    try {
-        const response = await fetch("https://technixx26.app.n8n.cloud/webhook/teacher-reference", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                text: text,
-                instructions: instructions
-            }),
-        });
-
-        const data = await response.json();
-        output.textContent = data.result || "❌ No result returned.";
-    } catch (err) {
-        output.textContent = "❌ Error: " + err.message;
-    }
-});
+<!-- 🔥 Single clean script block -->
 <script>
 async function generateReference() {
   const instructions = document.querySelector("#instructions").value;
@@ -95,10 +69,14 @@ async function generateReference() {
 
     const result = await response.json();
 
-    outputBox.innerText = result.answer || "❌ No response field found.";
+    // n8n FINAL RESPONSE NODE RETURNS { "answer": "..." }
+    outputBox.innerText = result.answer || "❌ No response returned.";
 
   } catch (err) {
     outputBox.innerHTML = "❌ Network error.";
   }
 }
 </script>
+
+</body>
+</html>
