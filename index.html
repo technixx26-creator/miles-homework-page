@@ -1,82 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>MilesAI – HW Generator</title>
-    <style>
-        body {
-            font-family: Arial;
-            padding: 20px;
-            max-width: 800px;
-            margin: auto;
-        }
-        textarea {
-            width: 100%;
-            height: 150px;
-            margin-bottom: 10px;
-        }
-        #output {
-            white-space: pre-wrap;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 8px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-
-<body>
-
-<h2>Assignment Instructions:</h2>
-<textarea id="instructions"></textarea>
-
-<h2>Homework Text:</h2>
-<textarea id="homework"></textarea>
-
-<button onclick="generateReference()">Generate Reference</button>
-
-<h2>Output:</h2>
-<div id="output">Waiting...</div>
-
-
-<!-- 🔥 Single clean script block -->
 <script>
-async function generateReference() {
-  const instructions = document.querySelector("#instructions").value;
-  const homework = document.querySelector("#homework").value;
-  const outputBox = document.querySelector("#output");
+document.getElementById("generateBtn").addEventListener("click", async () => {
+    const instructions = document.getElementById("instructions").value;
+    const homework = document.getElementById("text").value;
 
-  outputBox.innerHTML = "⏳ Generating...";
+    const output = document.getElementById("output");
+    output.textContent = "⏳ Generating...";
 
-  try {
     const response = await fetch("https://technixx26.app.n8n.cloud/webhook/teacher-reference", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        instructions: instructions,
-        text: homework,
-        mode: "text"
-      })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            instructions: instructions,
+            text: homework,
+            mode: "text"
+        }),
     });
 
-    if (!response.ok) {
-      outputBox.innerHTML = "❌ Server error.";
-      return;
-    }
-
-    const result = await response.json();
-
-    // n8n FINAL RESPONSE NODE RETURNS { "answer": "..." }
-    outputBox.innerText = result.answer || "❌ No response returned.";
-
-  } catch (err) {
-    outputBox.innerHTML = "❌ Network error.";
-  }
-}
+    const data = await response.json();
+    output.textContent = data.answer || "❌ No answer returned.";
+});
 </script>
-
-</body>
-</html>
